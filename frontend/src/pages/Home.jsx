@@ -453,117 +453,114 @@ const Home = () => {
 
       {/* All Products Section */}
       <section className="container mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-            <Leaf className="w-8 h-8 text-emerald-600" />
-            Fresh From Our Farms
-          </h2>
-          <button
-            className="text-emerald-600 hover:text-emerald-700 font-semibold flex items-center"
-            onClick={() => navigate("/shop")}
-          >
-            View All <ChevronRight className="w-5 h-5 ml-1" />
-          </button>
-        </div>
+  <div className="flex justify-between items-center mb-8">
+    <h2 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
+      <Leaf className="w-8 h-8 text-emerald-600" />
+      Fresh From Our Farms
+    </h2>
+    <button
+      className="text-emerald-600 hover:text-emerald-700 font-semibold flex items-center"
+      onClick={() => navigate("/shop")}
+    >
+      View All <ChevronRight className="w-5 h-5 ml-1" />
+    </button>
+  </div>
 
-        {productsLoading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
-          </div>
-        ) : productsError ? (
-          <div className="text-center py-12 text-red-500">{productsError}</div>
-        ) : (
+  {productsLoading ? (
+    <div className="text-center py-12">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+    </div>
+  ) : productsError ? (
+    <div className="text-center py-12 text-red-500">{productsError}</div>
+  ) : (
+    <motion.div
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        visible: { transition: { staggerChildren: 0.1 } },
+        hidden: {},
+      }}
+    >
+      <AnimatePresence>
+        {allProducts.slice(0, 4).map((product) => (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              visible: { transition: { staggerChildren: 0.1 } },
-              hidden: {},
-            }}
+            key={product.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-100 cursor-pointer"
+            onClick={() => navigate(`/product/${product.id}`)}
           >
-            
-            <AnimatePresence>
-              {allProducts.map((product) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0
-
-                    
-                   }}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-100 cursor-pointer"
-                  onClick={() => navigate(`/product/${product.id}`)}
+            <div className="relative h-56">
+              <div className="absolute top-2 left-2 z-10">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    product.status === "IN_STOCK"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-rose-100 text-rose-800"
+                  }`}
                 >
-                  <div className="relative h-56">
-                    <div className="absolute top-2 left-2 z-10">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          product.status === "IN_STOCK"
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "bg-rose-100 text-rose-800"
-                        }`}
-                      >
-                        {product.status.replace("_", " ")}
-                      </span>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent" />
-                    {productImages[product.id] ? (
-                      <img
-                        src={productImages[product.id]}
-                        alt={product.name}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-gray-100 flex items-center justify-center text-gray-400">
-                        No Image
-                      </div>
-                    )}
-                  </div>
+                  {product.status.replace("_", " ")}
+                </span>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent" />
+              {productImages[product.id] ? (
+                <img
+                  src={productImages[product.id]}
+                  alt={product.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="h-full w-full bg-gray-100 flex items-center justify-center text-gray-400">
+                  No Image
+                </div>
+              )}
+            </div>
 
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-emerald-600 font-medium">
-                        {product.category.replace(/_/g, " ")}
-                      </span>
-                      <div className="flex items-center text-amber-500">
-                        <Star className="w-4 h-4 fill-current" />
-                        <span className="text-sm ml-1">4.8</span>
-                      </div>
-                    </div>
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-emerald-600 font-medium">
+                  {product.category.replace(/_/g, " ")}
+                </span>
+                <div className="flex items-center text-amber-500">
+                  <Star className="w-4 h-4 fill-current" />
+                  <span className="text-sm ml-1">4.8</span>
+                </div>
+              </div>
 
-                    <h3 className="font-semibold text-lg text-slate-800 mb-2">
-                      {product.name}
-                    </h3>
+              <h3 className="font-semibold text-lg text-slate-800 mb-2">
+                {product.name}
+              </h3>
 
-                    <p className="text-slate-600 text-sm line-clamp-2 mb-4">
-                      {product.description}
-                    </p>
+              <p className="text-slate-600 text-sm line-clamp-2 mb-4">
+                {product.description}
+              </p>
 
-                    <div className="flex justify-between items-center">
-                      <span className="text-emerald-600 font-bold text-lg">
-                        ₹{product.pricePerUnit}/unit
-                      </span>
-                      <button
-                        className="p-2 bg-emerald-100 hover:bg-emerald-200 rounded-full transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Add to cart logic here
-                        }}
-                      >
-                        <ShoppingCart className="w-5 h-5 text-emerald-700" />
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+              <div className="flex justify-between items-center">
+                <span className="text-emerald-600 font-bold text-lg">
+                  ₹{product.pricePerUnit}/unit
+                </span>
+                <button
+                  className="p-2 bg-emerald-100 hover:bg-emerald-200 rounded-full transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Add to cart logic here
+                  }}
+                >
+                  <ShoppingCart className="w-5 h-5 text-emerald-700" />
+                </button>
+              </div>
+            </div>
           </motion.div>
-        )}
-      </section>
+        ))}
+      </AnimatePresence>
+    </motion.div>
+  )}
+</section>
+
 
       {/* Features Grid */}
       <section className="bg-gradient-to-br from-slate-50 to-emerald-50 py-5">
