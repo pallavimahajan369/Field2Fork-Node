@@ -99,7 +99,7 @@ router.get("/categories", (req, res) => {
       });
     }
   });
-});
+}) ;
 
 // Get a product by product_id
 router.get("/:product_id", (req, res) => {

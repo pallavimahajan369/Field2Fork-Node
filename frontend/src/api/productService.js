@@ -206,6 +206,7 @@ export const fetchProductsByCategories = async (categoryName) => {
     // Transform the categoryName to the desired format
     const formattedCategoryName = categoryName.toUpperCase().replace(/\s+/g, "_");
 
+    
     // const response = await fetch(
     //   `${API_BASE_URL}/category?category=${formattedCategoryName}`
     // );

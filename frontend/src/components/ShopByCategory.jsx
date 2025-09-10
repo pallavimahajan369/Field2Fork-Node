@@ -75,7 +75,8 @@ const ShopByCategory = () => {
               status: product.status,
               category: product.category ?? categoryName, // backend me category missing ho sakti
               imageUrl: images.length > 0 ? images[0].imageUrl : "placeholder.jpg",
-            };
+            }; 
+            
           } catch (error) {
             console.error(`Error fetching images for product ${product.product_id}:`, error);
             return {
