@@ -10,7 +10,7 @@ export const fetchProducts = async () => {
       id: p.product_id,
       name: p.name,
       description: p.description,
-      pricePerUnit: p.price_Per_unit, // ✅ Correct casing
+      pricePerUnit: p.price_per_unit, // ✅ Correct casing
       stockQuantity: p.stock_quantity,
       status: p.status,
       category: p.category,
@@ -112,7 +112,7 @@ export const fetchProductsBySeller = async (sellerId) => {
       id: p.product_id,
       name: p.name,
       description: p.description,
-      price_Per_unit: p.price_Per_unit,
+      price_per_unit: p.price_per_unit,
       stock_quantity: p.stock_quantity,
       status: p.status,
       category: p.category,
@@ -204,9 +204,8 @@ export const fetchCategories = async () => {
 export const fetchProductsByCategories = async (categoryName) => {
   try {
     // Transform the categoryName to the desired format
-    const formattedCategoryName = categoryName
-      .toLowerCase()
-      .replace(/\s+/g, "_");
+    const formattedCategoryName = categoryName.toUpperCase().replace(/\s+/g, "_");
+
     // const response = await fetch(
     //   `${API_BASE_URL}/category?category=${formattedCategoryName}`
     // );

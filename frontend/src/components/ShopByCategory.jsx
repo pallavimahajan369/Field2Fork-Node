@@ -55,41 +55,55 @@ const ShopByCategory = () => {
   };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await fetchProductsByCategories(categoryName);
-        // Fetch images for each product
-        const productsWithImages = await Promise.all(
-          data.map(async (product) => {
-            try {
-              const images = await fetchProductImages(product.id);
-              return {
-                ...product,
-                imageUrl:
-                  images.length > 0 ? images[0].imageUrl : "placeholder.jpg",
-              };
-            } catch (error) {
-              console.error(
-                `Error fetching images for product ${product.id}:`,
-                error
-              );
-              return { ...product, imageUrl: "placeholder.jpg" };
-            }
-          })
-        );
+  const loadProducts = async () => {
+    try {
+      const response = await fetchProductsByCategories(categoryName);
 
-        setProducts(productsWithImages);
+      // ✅ response.data me hi array hai
+      const productsArray = response.data || [];
 
-        setError(null);
-      } catch (err) {
-        setError(err.message);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [categoryName]);
+      const productsWithImages = await Promise.all(
+        productsArray.map(async (product) => {
+          try {
+            const images = await fetchProductImages(product.product_id);
+            return {
+              id: product.product_id,
+              name: product.name,
+              description: product.description,
+              pricePerUnit: product.price_per_unit,
+              stockQuantity: product.stock_quantity,
+              status: product.status,
+              category: product.category ?? categoryName, // backend me category missing ho sakti
+              imageUrl: images.length > 0 ? images[0].imageUrl : "placeholder.jpg",
+            };
+          } catch (error) {
+            console.error(`Error fetching images for product ${product.product_id}:`, error);
+            return {
+              id: product.product_id,
+              name: product.name,
+              description: product.description,
+              pricePerUnit: product.price_per_unit,
+              stockQuantity: product.stock_quantity,
+              status: product.status,
+              category: product.category ?? categoryName,
+              imageUrl: "placeholder.jpg",
+            };
+          }
+        })
+      );
+
+      setProducts(productsWithImages);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  loadProducts();
+}, [categoryName]);
+
   // useEffect(() => {
   //   const fetchProductImagesById = async () => {
   //     try {
@@ -127,20 +141,18 @@ const ShopByCategory = () => {
               <nav className="space-y-3">
                 {Object.entries(categoryIcons).map(([category, Icon]) => (
                   <Link
-                    key={category}
-                    to={`/category/${category}`}
-                    onClick={() => fetchProducts()}
-                    className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                      category === categoryName
-                        ? "bg-green-100 text-green-800"
-                        : "hover:bg-gray-50 text-gray-700"
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="capitalize">
-                      {category.toLowerCase().replace(/_/g, " ")}
-                    </span>
-                  </Link>
+  key={category}
+  to={`/category/${category}`}
+  className={`flex items-center gap-3 p-3 rounded-lg ${
+    category === categoryName
+      ? "bg-green-100 text-green-800"
+      : "hover:bg-gray-50 text-gray-700"
+  }`}
+>
+  <Icon className="w-5 h-5" />
+  <span className="capitalize">{category.toLowerCase().replace(/_/g, " ")}</span>
+</Link>
+
                 ))}
               </nav>
             </div>
@@ -163,9 +175,9 @@ const ShopByCategory = () => {
             {loading ? (
               <div className="text-center py-20">Loading...</div>
             ) : error ? (
-              <div className="text-center py-20 text-red-500">
-                No products in this category
-              </div>
+              <div>Error: {error}</div>
+            ) : products.length === 0 ? (
+              <div>No products found in this category</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>

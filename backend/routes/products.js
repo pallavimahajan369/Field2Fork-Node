@@ -31,14 +31,13 @@ router.post("/add", (req, res) => {
   const {
     name,
     description,
-    price_Per_unit,
+    price_per_unit,
     stock_quantity,
     status,
     category,
   } = req.body;
   const user_id = req.body.user_id;
-console.log("Received body:", req.body);
-
+  console.log("Received body:", req.body);
 
   if (!allowedCategories.includes(category)) {
     return res.status(400).json({
@@ -57,7 +56,7 @@ console.log("Received body:", req.body);
   }
 
   const statement = `
-    INSERT INTO products (name, description, price_Per_unit, stock_quantity, status, category, user_id)
+    INSERT INTO products (name, description, price_per_unit, stock_quantity, status, category, user_id)
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
@@ -66,7 +65,7 @@ console.log("Received body:", req.body);
     [
       name,
       description,
-      price_Per_unit,
+      price_per_unit,
       stock_quantity,
       status,
       category,
@@ -79,7 +78,6 @@ console.log("Received body:", req.body);
       } else {
         res.status(201).send(util.createResult(null, result));
         console.log("Returning products:", result);
-
       }
     }
   );
@@ -112,7 +110,7 @@ router.get("/:product_id", (req, res) => {
       product_id as id,
       name,
       description,
-      price_Per_unit as pricePerUnit,
+      price_per_unit as pricePerUnit,
       stock_quantity as stockQuantity,
       status,
       category,
@@ -131,14 +129,13 @@ router.get("/:product_id", (req, res) => {
   });
 });
 
-
 // Update product details
 router.put("/:product_id", (req, res) => {
   const { product_id } = req.params;
   const {
     name,
     description,
-    price_Per_unit,
+    price_per_unit,
     stock_quantity,
     status,
     category,
@@ -153,8 +150,6 @@ router.put("/:product_id", (req, res) => {
     });
   }
 
-
-
   if (!allowedStatus.includes(status)) {
     return res.status(400).json({
       status: "error",
@@ -164,7 +159,7 @@ router.put("/:product_id", (req, res) => {
 
   const statement = `
     UPDATE products 
-    SET name=?, description=?, price_Per_unit=?, stock_quantity=?, status=?, category=?
+    SET name=?, description=?, price_per_unit=?, stock_quantity=?, status=?, category=?
     WHERE product_id=?
   `;
 
@@ -173,7 +168,7 @@ router.put("/:product_id", (req, res) => {
     [
       name,
       description,
-      price_Per_unit,
+      price_per_unit,
       stock_quantity,
       status,
       category,
@@ -191,7 +186,6 @@ router.put("/:product_id", (req, res) => {
   );
 });
 
-
 router.put("/restore/:productId", (req, res) => {
   const { productId } = req.params;
   const sql = `UPDATE products SET active_status = 1 WHERE product_id = ?`;
@@ -201,11 +195,10 @@ router.put("/restore/:productId", (req, res) => {
   });
 });
 
-
 // Get all products
 router.get("/", (req, res) => {
   const statement = `
-    SELECT product_id, name, description, price_Per_unit, stock_quantity, status, category, active_status
+    SELECT product_id, name, description, price_per_unit, stock_quantity, status, category, active_status
     FROM products
   `;
   db.pool.query(statement, (error, result) => {
@@ -217,12 +210,11 @@ router.get("/", (req, res) => {
   });
 });
 
-
 // Get products by sellerId
 router.get("/seller/:sellerId", (req, res) => {
   const { sellerId } = req.params;
   const statement = `
-    SELECT product_id, name, description, price_Per_unit, stock_quantity, status, category, active_status 
+    SELECT product_id, name, description, price_per_unit, stock_quantity, status, category, active_status 
     FROM products WHERE user_id = ?
   `;
   db.pool.query(statement, [sellerId], (error, result) => {
@@ -238,12 +230,12 @@ router.get("/seller/:sellerId", (req, res) => {
   });
 });
 
-
 // Get products by category
 router.get("/category/:category", (req, res) => {
   const { category } = req.params;
+
   const statement = `
-    SELECT product_id, name, description, price_Per_unit, stock_quantity, status 
+    SELECT product_id, name, description, price_per_unit, stock_quantity, status 
     FROM products WHERE category = ?
   `;
   db.pool.query(statement, [category], (error, result) => {
