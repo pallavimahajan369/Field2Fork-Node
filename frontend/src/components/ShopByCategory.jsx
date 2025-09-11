@@ -76,7 +76,7 @@ const ShopByCategory = () => {
               category: product.category ?? categoryName, // backend me category missing ho sakti
               imageUrl: images.length > 0 ? images[0].imageUrl : "placeholder.jpg",
             }; 
-            
+
           } catch (error) {
             console.error(`Error fetching images for product ${product.product_id}:`, error);
             return {
@@ -235,7 +235,7 @@ const ShopByCategory = () => {
                         </div>
 
                         {/* Additional Content */}
-                        <div className="mt-4 text-gray-600 text-sm">
+                        {/* <div className="mt-4 text-gray-600 text-sm">
                           <p>
                             <strong>Origin:</strong> {product.origin || "India"}
                           </p>
@@ -247,7 +247,7 @@ const ShopByCategory = () => {
                             <strong>Farmer:</strong>{" "}
                             {product.sellerName || "Verified Seller"}
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </motion.div>
                   ))}

@@ -13,7 +13,7 @@ import {
   LogIn,
 } from "lucide-react";
 import { fetchCategories } from "../../api/headerService";
-import { fetchCartTotalQuantity } from "../../api/cartService";
+import { fetchCartTotalQuantityByCartId } from "../../api/cartService";
 import { useLocation } from "react-router-dom";
 
 
@@ -75,10 +75,10 @@ const Header = () => {
   // Fetch cart items quantity
  useEffect(() => {
   const fetchQuantity = async () => {
-    const authData = sessionStorage.getItem("authData");
-    const userId = authData ? JSON.parse(authData).data?.user_id : null;
-    if (userId) {
-      const totalQuantity = await fetchCartTotalQuantity(userId);
+     const cartId = sessionStorage.getItem("cartId");
+    if (cartId) {
+      const totalQuantity = await fetchCartTotalQuantityByCartId(cartId);
+      console.log("Total Cart Quantity:", totalQuantity);
       setCartQuantity(totalQuantity);
     }
   };
@@ -250,37 +250,37 @@ const Header = () => {
         </div>
       </button>
 
+     
       {/* Profile Dropdown */}
-      {isDropdownOpen && (
-        <div
-          className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-lg py-2 z-50"
-          onMouseLeave={() => setIsDropdownOpen(false)}
-        >
-          <Link
-            to="/profile"
-            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            Profile
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-          >
-            Logout
-          </button>
-        </div>
-      )}
-    </>
-  ) : (
-    <button
-      onClick={() => setShowRegister(true)}
-      className="flex items-center space-x-1 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors duration-200 transform hover:scale-105"
-    >
-      <LogIn className="h-4 w-4" />
-      <span>Sign In</span>
-    </button>
-  )}
-</div>
+                        <div
+                          className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-lg py-2 
+                      opacity-0 invisible group-hover:visible group-hover:opacity-100 
+                      transition-all duration-200 z-50"
+                        >
+                          <Link
+                            to="/profile"
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            Profile
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            Logout
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setShowRegister(true)}
+                        className="flex items-center space-x-1 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors duration-200 transform hover:scale-105"
+                      >
+                        <LogIn className="h-4 w-4" />
+                        <span>Sign In</span>
+                      </button>
+                    )}
+                  </div>
 
 
                   {/* Mobile Menu Button */}

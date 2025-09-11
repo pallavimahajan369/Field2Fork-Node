@@ -13,6 +13,7 @@ import {
   ShoppingBasket,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { fetchCartTotalQuantity } from "../api/cartService";
 import {
   getCartDetailsById,
   checkoutCart,

@@ -3,6 +3,7 @@ const API_BASE_URL = "http://localhost:4000/cart"; // Replace with actual backen
 export const getCartDetailsById = async (userId) => {
   const authDataStr = sessionStorage.getItem("authData");
   const authData = authDataStr ? JSON.parse(authDataStr) : null;
+   
   const token = authData?.data?.token || "";
 
   if (!token) {
@@ -22,6 +23,7 @@ export const getCartDetailsById = async (userId) => {
     console.log("📦 cartData response:", cartData); // <---- ADD THIS
 
     const cartId = cartData?.data?.cart?.cart_id;
+    sessionStorage.setItem("cartId", cartId);
     if (!cartId) throw new Error("No cart found for this user");
 
     // Step 2: Get cart items using correct cart_id
@@ -41,9 +43,8 @@ export const getCartDetailsById = async (userId) => {
 
 export const fetchCartTotalQuantity = async (userId) => {
   const authDataStr = sessionStorage.getItem("authData");
-const authData = authDataStr ? JSON.parse(authDataStr) : null;
-const token = authData?.data?.token || authData?.token || "";
-
+  const authData = authDataStr ? JSON.parse(authDataStr) : null;
+  const token = authData?.data?.token || authData?.token || "";
 
   if (!token) {
     console.error("No valid token found in session storage.");
@@ -62,13 +63,55 @@ const token = authData?.data?.token || authData?.token || "";
     const data = await response.json();
     console.log("Cart Data:", data);
 
-    // ✅ FIX HERE: expect `data.data` to be an array of cart items directly
-    const cartItems = data.data;
+    // ✅ Correct mapping from backend
+    const cartItems = data.cartItems;
     if (!Array.isArray(cartItems)) {
       console.warn("Invalid response structure:", data);
       return 0;
     }
 
+    const totalQuantity = cartItems.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    );
+console.log("Cart Data:", data);
+    return totalQuantity;
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+    return 0;
+  }
+};
+
+
+export const fetchCartTotalQuantityByCartId = async (cartId) => {
+  const authDataStr = sessionStorage.getItem("authData");
+  const authData = authDataStr ? JSON.parse(authDataStr) : null;
+  const token = authData?.data?.token || authData?.token || "";
+
+  if (!token) {
+    console.error("No valid token found in session storage.");
+    return 0;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:4000/cart/${cartId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Cart Data:", data);
+
+    const cartItems = data.cartItems;
+    if (!Array.isArray(cartItems)) {
+      console.warn("Invalid response structure:", data);
+      return 0;
+    }
+
+    // Total quantity calculation
     const totalQuantity = cartItems.reduce(
       (sum, item) => sum + item.quantity,
       0
@@ -80,7 +123,6 @@ const token = authData?.data?.token || authData?.token || "";
     return 0;
   }
 };
-
 
 
 export const getTotalQuantity = (cartItems) => {
