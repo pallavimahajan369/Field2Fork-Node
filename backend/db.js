@@ -5,10 +5,10 @@ const pool = mysql
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "123Pass@",
+    password: "######",
     database: "field2fork",
   })
-  // .promise(); // ✨ This enables async/await with .query()
+
 
 module.exports = {
   pool,
